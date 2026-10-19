@@ -1,0 +1,15 @@
+{
+  "name": "Convertidor de temperatura",
+  "short_name": "Convertidor de temperatura",
+  "description": "Convierte entre Celsius, Fahrenheit y Kelvin.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "lang": "es",
+  "theme_color": "#fbe4ec",
+  "background_color": "#fff7fa",
+  "icons": [
+    { "src": "icons/icon512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

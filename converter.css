@@ -1,0 +1,171 @@
+/* Paleta rosa, suave y limpia */
+:root {
+  --rosa: #e0527f;          /* acento principal */
+  --rosa-oscuro: #b8345f;   /* texto de acento / hover */
+  --rosa-claro: #fbe4ec;    /* barra de título y fondos suaves */
+  --rosa-borde: #f2c6d5;
+  --fondo: #fff7fa;
+  --tarjeta: #ffffff;
+  --texto: #4a2a37;
+  --texto-suave: #9a6b7e;
+  --sombra: 0 10px 30px rgba(224, 82, 127, .12), 0 2px 6px rgba(224, 82, 127, .06);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --rosa: #f27aa0;
+  --rosa-oscuro: #ffb3cb;
+  --rosa-claro: #2e1a24;
+  --rosa-borde: #4a2b3a;
+  --fondo: #1d1218;
+  --tarjeta: #26171f;
+  --texto: #f8e6ee;
+  --texto-suave: #c595a9;
+  --sombra: 0 10px 30px rgba(0, 0, 0, .35);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--rosa) 10%, transparent) 0, transparent 45%),
+    radial-gradient(circle at 90% 90%, color-mix(in srgb, var(--rosa) 8%, transparent) 0, transparent 40%),
+    var(--fondo);
+  background-attachment: fixed;
+  color: var(--texto);
+}
+
+/* Barra de título personalizada.
+   Se coloca con las variables de entorno de la superposición de controles de ventana;
+   si la característica no está activa se usan los valores de reserva. */
+#title-bar {
+  position: fixed;
+  left: env(titlebar-area-x, 0);
+  top: env(titlebar-area-y, 0);
+  width: env(titlebar-area-width, 100%);
+  height: env(titlebar-area-height, 40px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  background: var(--rosa-claro);
+  color: var(--rosa-oscuro);
+  border-bottom: 1px solid var(--rosa-borde);
+  font-size: 13px;
+  user-select: none;
+  -webkit-app-region: drag;   /* convierte la barra en un controlador de arrastre */
+  app-region: drag;
+  z-index: 10;
+}
+
+.title-icon { width: 20px; height: 20px; border-radius: 6px; }
+.title-text { font-weight: 600; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wco-status { margin-left: auto; margin-right: 4px; opacity: .8; font-size: 12px; white-space: nowrap; }
+
+/* El contenido empieza debajo de la barra de título */
+main {
+  padding: calc(env(titlebar-area-height, 40px) + 32px) 20px 32px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 20px;
+  text-align: center;
+  color: var(--texto);
+}
+h1::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 4px;
+  margin: 10px auto 0;
+  border-radius: 999px;
+  background: var(--rosa);
+}
+
+form {
+  display: grid;
+  gap: 8px;
+  background: var(--tarjeta);
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid var(--rosa-borde);
+  box-shadow: var(--sombra);
+}
+
+label {
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+label:first-child { margin-top: 0; }
+
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 1rem;
+  border: 1px solid var(--rosa-borde);
+  border-radius: 12px;
+  background: var(--fondo);
+  color: inherit;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0527f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+input:hover, select:hover { border-color: var(--rosa); }
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--rosa);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--rosa) 20%, transparent);
+}
+
+output {
+  margin-top: 16px;
+  padding: 18px;
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: #fff;
+  background: linear-gradient(135deg, #f58fb0, var(--rosa) 55%, #c94a8a);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--rosa) 30%, transparent);
+}
+
+/* Botones dentro de la barra de título (no deben arrastrar la ventana) */
+.title-actions { display: flex; gap: 2px; }
+.title-btn {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+  display: grid; place-items: center;
+  width: 32px; height: 28px;
+  padding: 0; border: 0; border-radius: 8px;
+  background: transparent; color: var(--rosa-oscuro); cursor: pointer;
+  transition: background .15s;
+}
+.title-btn:hover { background: color-mix(in srgb, var(--rosa) 15%, transparent); }
+.title-btn:focus-visible { outline: 2px solid var(--rosa); outline-offset: 1px; }
+.title-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--rosa) 25%, transparent); }
+.ic { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 520px) { .wco-status, .title-text { display: none; } }
