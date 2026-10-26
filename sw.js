@@ -1,5 +1,5 @@
 const PREFIJO = 'temperature-converter-';
-const CACHE_VERSION = 'v6';
+const CACHE_VERSION = 'v7';
 const CACHE = PREFIJO + CACHE_VERSION;
 // Caché propia del widget: su nombre no empieza con PREFIJO, así activate no la borra.
 const CACHE_WIDGET = 'convertidor-widget';
@@ -46,8 +46,8 @@ async function actualizarWidget(tag) {
 
 async function actualizarWidgets() {
   if (!self.widgets) return;
-  const instalados = await self.widgets.getByTag(TAG);
-  if (instalados.length) await actualizarWidget(TAG);
+  const instalados = await self.widgets.matchAll({ tag: TAG });
+  if (instalados && instalados.length) await actualizarWidget(TAG);
 }
 
 self.addEventListener('widgetinstall', e => {
@@ -66,8 +66,8 @@ self.addEventListener('widgetresume', e => {
 self.addEventListener('widgetuninstall', e => {
   e.waitUntil((async () => {
     const tag = e.widget.definition.tag;
-    const restantes = await self.widgets.getByTag(tag);
-    if (!restantes.length && self.registration.periodicSync) {
+    const restantes = await self.widgets.matchAll({ tag });
+    if (!(restantes && restantes.length) && self.registration.periodicSync) {
       await self.registration.periodicSync.unregister(tag);
     }
   })());
