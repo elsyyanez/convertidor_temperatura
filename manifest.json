@@ -11,5 +11,27 @@
   "background_color": "#fff7fa",
   "icons": [
     { "src": "icons/icon512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ],
+  "screenshots": [
+    { "src": "screenshots/app-wide.png", "sizes": "1280x720", "type": "image/png", "form_factor": "wide", "label": "Convertidor en escritorio" },
+    { "src": "screenshots/app-narrow.png", "sizes": "540x720", "type": "image/png", "form_factor": "narrow", "label": "Convertidor en ventana estrecha" }
+  ],
+  "widgets": [
+    {
+      "name": "Última conversión",
+      "description": "Muestra la última conversión de temperatura realizada.",
+      "tag": "convertidor-ultima",
+      "template": "convertidor-ultima",
+      "ms_ac_template": "widgets/convertidor-plantilla.json",
+      "data": "widgets/convertidor-datos.json",
+      "type": "application/json",
+      "update": 3600,
+      "icons": [
+        { "src": "icons/icon512.png", "sizes": "512x512", "type": "image/png" }
+      ],
+      "screenshots": [
+        { "src": "screenshots/widget.png", "sizes": "600x400", "label": "Widget con la última conversión" }
+      ]
+    }
   ]
 }

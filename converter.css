@@ -169,3 +169,32 @@ output {
 .ic { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 @media (max-width: 520px) { .wco-status, .title-text { display: none; } }
+
+/* Menú de compartir / exportar */
+.share-menu {
+  position: fixed;
+  top: calc(env(titlebar-area-y, 0px) + env(titlebar-area-height, 40px) + 4px);
+  right: 12px;
+  z-index: 20;
+  min-width: 210px;
+  padding: 6px;
+  display: grid;
+  gap: 2px;
+  background: var(--tarjeta);
+  border: 1px solid var(--rosa-borde);
+  border-radius: 14px;
+  box-shadow: var(--sombra);
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+.share-menu[hidden] { display: none; }
+.share-menu button {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 9px 12px;
+  border: 0; border-radius: 9px;
+  background: transparent; color: var(--texto);
+  font: inherit; font-size: .9rem; text-align: left; cursor: pointer;
+}
+.share-menu button:hover, .share-menu button:focus-visible { background: color-mix(in srgb, var(--rosa) 14%, transparent); outline: none; }
+.share-menu .ic { color: var(--rosa); flex: none; }
+.share-menu hr { width: 100%; margin: 4px 0; border: 0; border-top: 1px solid var(--rosa-borde); }

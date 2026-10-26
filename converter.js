@@ -32,8 +32,34 @@ function convertir() {
   outputTemp.textContent = `${texto} ${nombres[outputUnit.value]}`;
 }
 
-[inputTemp, inputUnit, outputUnit].forEach(el => el.addEventListener('input', convertir));
+[inputTemp, inputUnit, outputUnit].forEach(el => el.addEventListener('input', () => { convertir(); publicarWidget(); }));
 convertir();
+
+// ---- Widget de Windows 11: guarda la última conversión y avisa al service worker ----
+function publicarWidget() {
+  const valor = parseFloat(inputTemp.value);
+  if (Number.isNaN(valor) || !('caches' in window)) return;
+  const celsius = toCelsius(valor, inputUnit.value);
+  const fmt = (n) => n.toLocaleString('es-MX', { maximumFractionDigits: 1 });
+  const datos = {
+    conversion: `${fmt(valor)} ${nombres[inputUnit.value]} = ${outputTemp.textContent}`,
+    celsius: `${fmt(celsius)} °C`,
+    fahrenheit: `${fmt(fromCelsius(celsius, 'f'))} °F`,
+    kelvin: `${fmt(fromCelsius(celsius, 'k'))} K`,
+    hora: new Date().toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })
+  };
+  caches.open('convertidor-widget')
+    .then(c => c.put('widgets/ultimo.json', new Response(JSON.stringify(datos), { headers: { 'Content-Type': 'application/json' } })))
+    .then(() => navigator.serviceWorker && navigator.serviceWorker.ready)
+    .then(reg => reg && reg.active && reg.active.postMessage({ tipo: 'widget-actualizar' }))
+    .catch(() => { /* sin caché: el widget conserva sus datos */ });
+}
+
+// ?nuevo=1 (botón "Nuevo" del widget): enfoca el campo de temperatura
+if (new URLSearchParams(location.search).has('nuevo')) {
+  inputTemp.focus();
+  inputTemp.select();
+}
 
 // ---- Superposición de controles de ventana (Window Controls Overlay) ----
 const debounce = (func, wait) => {
@@ -76,6 +102,7 @@ function intercambiar() {
   outputUnit.value = desde;
   if (!Number.isNaN(resultado)) inputTemp.value = Math.round(resultado * 10) / 10;
   convertir();
+  publicarWidget();
 }
 $('btn-swap').addEventListener('click', intercambiar);
 
@@ -90,8 +117,8 @@ $('btn-copy').addEventListener('click', async () => {
   }
 });
 
-// 2b. Compartir resultado (menú nativo de compartir; si no existe, copia al portapapeles)
-$('btn-share').addEventListener('click', async () => {
+// 2b. Compartir resultado (lo abre el menú de export.js; menú nativo de compartir; si no existe, copia al portapapeles)
+async function compartirNativo() {
   if (Number.isNaN(ultimoResultado)) { avisar('Nada que compartir'); return; }
   const texto = `${inputTemp.value} ${nombres[inputUnit.value]} = ${outputTemp.textContent}`;
   const datos = { title: 'Convertidor de temperatura', text: texto };
@@ -108,7 +135,7 @@ $('btn-share').addEventListener('click', async () => {
     if (err && err.name === 'AbortError') return; // el usuario canceló
     avisar('No se pudo compartir');
   }
-});
+}
 
 // 3. Restablecer
 function restablecer() {
@@ -116,6 +143,7 @@ function restablecer() {
   inputUnit.value = 'c';
   outputUnit.value = 'f';
   convertir();
+  publicarWidget();
   inputTemp.focus();
 }
 $('btn-reset').addEventListener('click', restablecer);
