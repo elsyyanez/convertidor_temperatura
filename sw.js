@@ -1,7 +1,7 @@
 importScripts('pendientes.js');
 
 const PREFIJO = 'temperature-converter-';
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE = PREFIJO + CACHE_VERSION;
 // Caché propia del widget: su nombre no empieza con PREFIJO, así activate no la borra.
 const CACHE_WIDGET = 'convertidor-widget';
@@ -246,14 +246,27 @@ self.addEventListener('push', e => {
     catch { try { datos = { cuerpo: e.data.text() }; } catch { /* sin contenido legible */ } }
   }
   if (!datos || typeof datos !== 'object') datos = { cuerpo: String(datos) };
-  // Con userVisibleOnly siempre hay que mostrar una notificación.
-  e.waitUntil(self.registration.showNotification(datos.titulo || 'Convertidor de temperatura', {
-    body: datos.cuerpo || '',
-    icon: ICONO,
-    tag: 'push',
-    renotify: true,
-    actions: ACCIONES
-  }));
+  const titulo = datos.titulo || 'Convertidor de temperatura';
+  const cuerpo = datos.cuerpo || '';
+  e.waitUntil((async () => {
+    // Si la app está a la vista y con el foco, el aviso baja desde arriba dentro de la propia app
+    // y no hace falta notificación del sistema (el navegador lo permite en ese caso).
+    let enApp = false;
+    try {
+      const ventanas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      ventanas.forEach(v => v.postMessage({ tipo: 'push-app', titulo, cuerpo }));
+      enApp = ventanas.some(v => v.visibilityState === 'visible' && v.focused);
+    } catch { /* sin ventanas */ }
+    if (enApp) return;
+    // Con userVisibleOnly, fuera de ese caso siempre hay que mostrar una notificación.
+    await self.registration.showNotification(titulo, {
+      body: cuerpo,
+      icon: ICONO,
+      tag: 'push',
+      renotify: true,
+      actions: ACCIONES
+    });
+  })());
 });
 
 self.addEventListener('widgetclick', e => {

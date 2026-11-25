@@ -56,7 +56,11 @@ Si cambias las claves, las suscripciones antiguas dejan de servir: cancela el pe
 3. DevTools → Network → Offline. Haz 2 cálculos: debe decir "2 cambios pendientes" y el icono de la barra de tareas mostrar el 2.
 4. Vuelve a "No throttling" **antes** de forzar la sincronización. Minimiza solo la ventana de la app.
 5. DevTools → Application → Service workers → campo Sync → `sincronizar-pendientes` → botón. Debe salir la notificación y borrarse el número.
-6. Pulsa "Enviar push de prueba": debe llegar "Push de prueba desde Vercel".
+6. Pulsa "Enviar push de prueba": con la app a la vista y con el foco, el aviso baja desde arriba dentro de la app; con la ventana minimizada o sin foco, llega como notificación de Windows.
+
+### Dónde se guardan los pendientes
+
+Las conversiones hechas sin conexión se guardan en **IndexedDB** del navegador: base `convertidor-pendientes`, almacén `pendientes` (cada registro tiene `entrada`, `resultado` y `fecha`). Se pueden ver en DevTools → Application → IndexedDB. Se borran solo cuando la sincronización termina bien. El estado de la última sincronización y el diagnóstico de notificaciones están en la Cache API (`convertidor-estado`).
 
 ### Problemas conocidos
 
