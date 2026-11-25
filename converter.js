@@ -176,13 +176,13 @@ document.addEventListener('fullscreenchange', () => {
 
 // Mensaje breve en la barra de título
 let avisoTimer;
-function avisar(texto) {
+function avisar(texto, ms = 2500) {
   wcoStatus.textContent = texto;
   clearTimeout(avisoTimer);
   avisoTimer = setTimeout(() => {
     wcoStatus.textContent = '';
     if ('windowControlsOverlay' in navigator) actualizarEstadoWCO();
-  }, 2500);
+  }, ms);
 }
 
 // Atajos Alt + letra
@@ -197,19 +197,3 @@ document.addEventListener('keydown', (e) => {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(err => console.error('SW error', err));
 }
-
-// ---- Sincronización periódica en segundo plano: mantiene la app actualizada aunque esté cerrada ----
-// Requiere el permiso 'periodic-background-sync' (Edge lo concede a PWA instaladas y usadas con frecuencia).
-async function registrarSyncPeriodica() {
-  if (!('serviceWorker' in navigator)) return;
-  try {
-    const registro = await navigator.serviceWorker.ready;
-    if (!registro.periodicSync) return; // no soportado en este navegador
-    const estado = await navigator.permissions.query({ name: 'periodic-background-sync' });
-    if (estado.state !== 'granted') return; // sin permiso
-    await registro.periodicSync.register('actualizar-app', { minInterval: 24 * 60 * 60 * 1000 });
-  } catch (err) {
-    console.warn('Sincronización periódica no disponible', err);
-  }
-}
-registrarSyncPeriodica();

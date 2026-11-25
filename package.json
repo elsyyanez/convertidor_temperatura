@@ -1,0 +1,10 @@
+{
+  "name": "convertidor-temperatura",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PWA para convertir entre Celsius, Fahrenheit y Kelvin, con funciones de Vercel para notificaciones push.",
+  "license": "MIT",
+  "dependencies": {
+    "web-push": "3.6.7"
+  }
+}

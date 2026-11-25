@@ -59,9 +59,22 @@
 
       <output id="output-temp" for="input-temp input-unit output-unit">71,6 F</output>
     </form>
+
+    <section id="estado" class="estado" aria-label="Estado de la aplicación">
+      <p class="estado-conexion"><span id="punto-conexion" class="punto" aria-hidden="true"></span><span id="texto-conexion" role="status">En línea</span></p>
+      <p id="texto-pendientes" class="estado-sec" role="status" hidden></p>
+      <p id="texto-sync" class="estado-sec">Sincronización periódica: comprobando…</p>
+      <p id="texto-aviso" class="estado-aviso" role="status" hidden></p>
+      <div class="estado-botones">
+        <button type="button" id="btn-notif" class="btn-suave" hidden>Activar notificaciones</button>
+        <button type="button" id="btn-push" class="btn-suave" hidden>Enviar push de prueba</button>
+      </div>
+    </section>
   </main>
 
+  <script src="pendientes.js"></script>
   <script src="converter.js"></script>
   <script src="export.js"></script>
+  <script src="sincronizacion.js"></script>
 </body>
 </html>
