@@ -117,8 +117,30 @@ function alCambiarConversion() {
 $('btn-swap').addEventListener('click', alCambiarConversion);
 $('btn-reset').addEventListener('click', alCambiarConversion);
 
+// ---- Aviso de push dentro de la app (baja desde arriba) ----
+const bannerPush = $('banner-push');
+let bannerTimer;
+function ocultarBanner() {
+  clearTimeout(bannerTimer);
+  bannerPush.classList.remove('visible');
+  setTimeout(() => { if (!bannerPush.classList.contains('visible')) bannerPush.hidden = true; }, 400);
+}
+function mostrarBanner(titulo, cuerpo) {
+  $('banner-titulo').textContent = titulo;
+  $('banner-cuerpo').textContent = cuerpo;
+  bannerPush.hidden = false;
+  void bannerPush.offsetWidth; // fuerza el reflujo para que la animación arranque
+  bannerPush.classList.add('visible');
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(ocultarBanner, 7000);
+}
+$('banner-cerrar').addEventListener('click', ocultarBanner);
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data && e.data.tipo === 'push-app' && document.visibilityState === 'visible') {
+      mostrarBanner(e.data.titulo, e.data.cuerpo);
+    }
     if (e.data && e.data.tipo === 'estado-sync') {
       estadoSync = e.data.estado || {};
       pintarSync();
