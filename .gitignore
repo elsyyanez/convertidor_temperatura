@@ -1,1 +1,3 @@
 _respaldo/
+node_modules/
+.vercel/
